@@ -7,6 +7,6 @@ cabal update
 cabal install snap
 mkdir snap-ex
 cd snap-ex
-snap init barebones
+snap init [barebones]
 cabal install
 ~/.cabal/bin/snap-ex
