@@ -10,3 +10,7 @@ cd snap-ex
 snap init [barebones]
 cabal install
 ~/.cabal/bin/snap-ex
+
+
+** tutorial page
+http://snapframework.com/docs/tutorials/snaplets-tutorial
