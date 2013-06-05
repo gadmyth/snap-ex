@@ -24,6 +24,7 @@ import           Heist
 import qualified Heist.Interpreted as I
 ------------------------------------------------------------------------------
 import           Application
+import           Gadmyth
 
 
 ------------------------------------------------------------------------------
@@ -66,8 +67,14 @@ routes = [ ("/login",    with auth handleLoginSubmit)
          , ("/logout",   with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
          , ("",          serveDirectory "static")
+         , ("/hello", writeText "hello world")
+         , ("/cydia", with cydia namePage)
          ]
 
+namePage :: Handler b v ()
+namePage = do
+         mname <- getSnapletName
+         writeText $ fromMaybe "This shouldn't happen" mname
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
@@ -76,6 +83,7 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     h <- nestSnaplet "" heist $ heistInit "templates"
     s <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
+    cs <- nestSnaplet "cydia" cydia $ cydiaInit
 
     -- NOTE: We're using initJsonFileAuthManager here because it's easy and
     -- doesn't require any kind of database server to run.  In practice,
@@ -84,5 +92,5 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
            initJsonFileAuthManager defAuthSettings sess "users.json"
     addRoutes routes
     addAuthSplices auth
-    return $ App h s a
+    return $ App h s a cs
 
